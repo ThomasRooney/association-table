@@ -1,0 +1,57 @@
+{
+  "name": "association-table",
+  "version": "0.0.1",
+  "description":
+    "This is an implementation of an Association table. It keeps track of many => many relationships between two types of items. Operations on a given key (or value) can return multiples of the equivalent value (or key).",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "test": "jest",
+    "prepublish": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ThomasRooney/association-table.git"
+  },
+  "keywords": [
+    "map",
+    "bidirectional map",
+    "typed",
+    "typesafe",
+    "typescript",
+    "bi directional map",
+    "two way map",
+    "many to many",
+    "many map",
+    "association map",
+    "association table"
+  ],
+  "author": "Thomas Rooney",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThomasRooney/association-table/issues"
+  },
+  "homepage": "https://github.com/ThomasRooney/association-table#readme",
+  "files": ["lib"],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "22.2.3",
+    "jest": "22.4.3",
+    "prettier": "1.12.1",
+    "ts-jest": "22.4.6",
+    "tslint": "5.9.1",
+    "tslint-config-prettier": "1.12.0",
+    "tslint-eslint-rules": "5.1.0",
+    "typescript": "2.8.3"
+  },
+  "jest": {
+    "roots": ["<rootDir>/src"],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "collectCoverage": true
+  }
+}
