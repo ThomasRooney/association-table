@@ -89,7 +89,7 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     keyArray.forEach(key => {
       const valueArray = this.associationsKToV.get(key) as V[];
       this.numberOfAssociations -= 1;
-      valueArray.splice(valueArray.indexOf(value));
+      valueArray.splice(valueArray.indexOf(value), 1);
       if (valueArray.length === 0) {
         this.associationsKToV.delete(key);
       }
