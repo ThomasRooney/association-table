@@ -236,7 +236,7 @@ describe("conflict scenarios", () => {
     expect(map.getKey(1)).toMatchObject(["B"]);
     expect(map.size).toBe(1);
   });
-  it("deleting 2 from {A => 1, B => 1, A => 2, A => 2} results in {A => 2, B => 2}", () => {
+  it("deleting 1 from {A => 1, B => 1, A => 2, A => 2} results in {A => 2, B => 2}", () => {
     const map = new AssociationTable<string, number>();
     map.associate("A", 1);
     map.associate("B", 1);
