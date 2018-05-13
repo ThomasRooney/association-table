@@ -3,8 +3,5 @@
   "extends": ["tslint:latest", "tslint-eslint-rules", "tslint-config-prettier"],
   "jsRules": {},
   "rules": {},
-  "rulesDirectory": [],
-  "linterOptions": {
-    "exclude": ["index.test.ts"]
-  }
+  "rulesDirectory": []
 }
