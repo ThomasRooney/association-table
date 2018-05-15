@@ -7,7 +7,7 @@
   "scripts": {
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "test": "jest",
-    "prepublish": "tsc"
+    "prepublish": "tsc && jest"
   },
   "repository": {
     "type": "git",
