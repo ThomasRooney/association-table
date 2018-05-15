@@ -12,15 +12,24 @@ export interface IAssociationTable<K, V> {
     callbackfn: (value: V, key: K, table: IAssociationTable<K, V>) => void,
     thisArg?: any
   ) => void; // executes the provided callback once for each association
+  map: <U>(
+    callbackfn: (value: V, key: K, table: IAssociationTable<K, V>) => U,
+    thisArg?: any
+  ) => U[]; // maps each association using the callback function
+  filter: (
+    callbackfn: (value: V, key: K, table: IAssociationTable<K, V>) => boolean,
+    thisArg?: any
+  ) => IAssociationTable<K, V>; // produces a new association table for results where callbackfn returns true
+
   has: (key: K) => boolean; // Returns true if any associations with the specified key exists; otherwise false.
   hasKey: (key: K) => boolean; // Returns true if any associations with the specified key exists; otherwise false.
   hasValue: (value: V) => boolean; // Returns true if any associations with the specified value exists; otherwise false.
-  [Symbol.toStringTag]: "AssociationTable"; // used in util.inspect / console.log
+  [Symbol.toStringTag]: 'AssociationTable'; // used in util.inspect / console.log
   inspect: () => string; // A utility function to inspect current contents as a string
 }
 
 class AssociationTable<K, V> implements IAssociationTable<K, V> {
-  public [Symbol.toStringTag]: "AssociationTable";
+  public [Symbol.toStringTag]: 'AssociationTable';
 
   private associationsKToV: Map<K, V[]> = new Map<K, V[]>();
   private associationsVToK: Map<V, K[]> = new Map<V, K[]>();
@@ -30,8 +39,7 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     return this.numberOfAssociations / 2; // number of associations should always be divisible by two
   }
   public get = (key: K) => Array.from(this.associationsKToV.get(key) || []); // Array.from used to keep the Map's array internal, avoiding possibility an array modification after API call
-  public getKey = (value: V) =>
-    Array.from(this.associationsVToK.get(value) || []); // Array.from used to keep the Map's array internal, avoiding possibility an array modification after API call
+  public getKey = (value: V) => Array.from(this.associationsVToK.get(value) || []); // Array.from used to keep the Map's array internal, avoiding possibility an array modification after API call
   public getValue = (key: K) => this.get(key);
   public associate = (key: K, value: V) => {
     let keyArray: K[] | undefined = this.associationsVToK.get(value);
@@ -67,7 +75,7 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     if (!valueArray) {
       return false;
     }
-    valueArray.forEach(value => {
+    valueArray.forEach((value) => {
       const keyArray = this.associationsVToK.get(value) as K[];
       this.numberOfAssociations -= 1;
       keyArray.splice(keyArray.indexOf(key), 1);
@@ -86,7 +94,7 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     if (!keyArray) {
       return false;
     }
-    keyArray.forEach(key => {
+    keyArray.forEach((key) => {
       const valueArray = this.associationsKToV.get(key) as V[];
       this.numberOfAssociations -= 1;
       valueArray.splice(valueArray.indexOf(value), 1);
@@ -103,10 +111,32 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     thisArg?: any
   ) => {
     this.associationsKToV.forEach((valueArray, key) => {
-      valueArray.forEach(value => {
+      valueArray.forEach((value) => {
         callbackfn.apply(thisArg, [value, key, this]);
       });
     });
+  };
+  public map = <U>(
+    callbackfn: (value: V, key: K, table: IAssociationTable<K, V>) => U,
+    thisArg?: any
+  ) => {
+    const accumulator: U[] = [];
+    this.forEach((value, key, table) => {
+      accumulator.push(callbackfn.apply(thisArg, [value, key, table]));
+    });
+    return accumulator;
+  };
+  public filter = <U>(
+    callbackfn: (value: V, key: K, table: IAssociationTable<K, V>) => U,
+    thisArg?: any
+  ) => {
+    const table = new AssociationTable<K, V>();
+    this.forEach((value, key, thisTable) => {
+      if (callbackfn.apply(thisArg, [value, key, thisTable])) {
+        table.associate(key, value);
+      }
+    });
+    return table;
   };
   public has = (key: K) => this.associationsKToV.has(key);
   public hasKey = (key: K) => this.has(key);
@@ -115,16 +145,16 @@ class AssociationTable<K, V> implements IAssociationTable<K, V> {
     this.get(key).includes(value);
   }
   public inspect = () => {
-    let str = "AssociationTable {";
+    let str = 'AssociationTable {';
     let entry = 0;
     this.forEach((value, key) => {
       entry++;
-      str += "" + key.toString() + " => " + value.toString() + "";
+      str += '' + key.toString() + ' => ' + value.toString() + '';
       if (entry < this.size) {
-        str += ", ";
+        str += ', ';
       }
     });
-    str += "}";
+    str += '}';
     return str;
   };
 }
